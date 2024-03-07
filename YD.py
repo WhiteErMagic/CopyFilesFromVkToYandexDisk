@@ -1,4 +1,5 @@
 import requests
+from Result import Result
 
 
 class YDService:
@@ -24,8 +25,15 @@ class YDService:
             'path': name_photo
         }
         response = requests.get(url, params=params, headers=self.headers)
-        return response
+
+        if response.status_code == 200:
+            return Result(True, response.json(), "")
+        else:
+            return Result(False, response.json(), response.json())
 
     def upload_file(self, current_url_for_upload, file):
         response = requests.put(current_url_for_upload, files={'file': file})
-        return response
+        if response.status_code == 201:
+            return Result(True, "", "")
+        else:
+            return Result(False, "", response.text)
